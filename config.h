@@ -3,6 +3,7 @@
 
 /* appearance */
 static const unsigned int borderpx				= 2;	/* border pixel of windows */
+static const unsigned int gappx     			= 5;	/* gaps between windows */
 static const unsigned int snap      			= 32; /* snap pixel */
 static const unsigned int systraypinning 	= 0;  /* 0: sloppy systray follows selected monitor, >0: pin systray to monitor X */
 static const unsigned int systrayspacing 	= 2;  /* systray spacing */
@@ -10,8 +11,8 @@ static const int systraypinningfailfirst 	= 1;  /* 1: if pinning fails, display 
 static const int showsystray        			= 1;  /* 0 means no systray */
 static const int showbar            			= 1;  /* 0 means no bar */
 static const int topbar             			= 1;  /* 0 means bottom bar */
-static const char *fonts[]          			= { "monospace:size=10" };
-static const char dmenufont[]       			= "monospace:size=12";
+static const char *fonts[]          			= { "monospace:size=11" };
+static const char dmenufont[]       			= "Fira Code:size=12";
 
 static const char col_gray1[]         		= "#282a36";
 static const char col_gray2[]         		= "#282a36"; /* border color unfocused windows */
@@ -39,8 +40,9 @@ static const Rule rules[] = {
 	 *	WM_NAME(STRING) = title
 	 */
 	/* class      instance    title       tags mask     isfloating   monitor */
-	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
-	{ "Firefox",  NULL,       NULL,       1 << 8,       0,           -1 },
+	{ "gimp",     NULL,       NULL,       0,            1,           -1 },
+	{ "firefox",  NULL,       NULL,       1 << 8,       0,           -1 },
+	{ "Discord", 	NULL,				"Discord",  1 << 8,       0, 					 -1 }
 };
 
 /* layout(s) */
@@ -50,8 +52,8 @@ static const int resizehints = 1;    /* 1 means respect size hints in tiled resi
 
 static const Layout layouts[] = {
 	/* symbol     arrange function */
-	{ "[]=",      tile },    /* first entry is default */
-	{ "><>",      NULL },    /* no layout function means floating behavior */
+	{ "[T]",      tile },    /* first entry is default */
+	{ "[F]",      NULL },    /* no layout function means floating behavior */
 	{ "[M]",      monocle },
 };
 
