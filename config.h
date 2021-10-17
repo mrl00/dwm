@@ -3,7 +3,7 @@
 
 /* appearance */
 static const unsigned int borderpx				= 2;	/* border pixel of windows */
-static const unsigned int gappx     			= 5;	/* gaps between windows */
+static const unsigned int gappx     			= 8;	/* gaps between windows */
 static const unsigned int snap      			= 32; /* snap pixel */
 static const unsigned int systraypinning 	= 0;  /* 0: sloppy systray follows selected monitor, >0: pin systray to monitor X */
 static const unsigned int systrayspacing 	= 2;  /* systray spacing */
@@ -20,7 +20,8 @@ static const char col_gray3[]         		= "#96b5b4";
 static const char col_gray4[]         		= "#d7d7d7";
 static const char col_cyan[]          		= "#924441"; /* border color focused windows and tags */
 static const char col_green[]		  				= "#1aff1a";
-static const char col_orange[]		  			= "#ff5733";
+static const char col_orange[]		  			= "#df9443";
+static const char col_light_blue[]				= "#1a8cff";
 
 static const char *colors[][3]      = {
 	/*               fg         bg         border   */
@@ -29,7 +30,9 @@ static const char *colors[][3]      = {
 };
 
 /* tagging */
-static const char *tags[] = { "1","2","3","4","5","6","7","8","9" };
+// static const char *tags[] = { "1","2","3","4","5","6","7","8","9" };
+static const char *tags[] = { "ⅼ","Ⅱ","Ⅲ","Ⅳ","Ⅴ","Ⅵ","Ⅶ","Ⅷ","Ⅸ" };
+// static const char *tags[] = { "♠", "♡", "♢", "♣", "♤", "♥", "♦", "♧", "✦"};
 //static const char *tags[] = { "", "", "", "", "", "", "", "", "" };
 //static const char *tags[] = { "☽","☾","🌑","🌒","🌓","🌔","🌕","🌖","🌘" };
 //static const char *tags[] = { "𖤍","𓅂","࿐","ௐ","ஒ","៚","༆","Ӂ","༫" };
@@ -40,9 +43,9 @@ static const Rule rules[] = {
 	 *	WM_NAME(STRING) = title
 	 */
 	/* class      instance    title       tags mask     isfloating   monitor */
-	{ "gimp",     NULL,       NULL,       0,            1,           -1 },
-	{ "firefox",  NULL,       NULL,       1 << 8,       0,           -1 },
-	{ "Discord", 	NULL,				"Discord",  1 << 8,       0, 					 -1 }
+	{ "gimp",     				NULL,       NULL,       0,            1,           -1 },
+	{ "firefox",  				NULL,       NULL,       1 << 4,       0,           -1 },
+	{ "Telegram", 				NULL,				NULL,  			1 << 7,       0, 					 -1 }
 };
 
 /* layout(s) */
@@ -52,9 +55,9 @@ static const int resizehints = 1;    /* 1 means respect size hints in tiled resi
 
 static const Layout layouts[] = {
 	/* symbol     arrange function */
-	{ "[T]",      tile },    /* first entry is default */
-	{ "[F]",      NULL },    /* no layout function means floating behavior */
-	{ "[M]",      monocle },
+	{ "[𝕋]",      tile },    /* first entry is default */
+	{ "[𝔽]",      NULL },    /* no layout function means floating behavior */
+	{ "[𝕄]",      monocle },
 };
 
 /* key definitions */

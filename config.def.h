@@ -17,7 +17,8 @@ static const char col_gray2[]         = "#282a36"; /* border color unfocused win
 static const char col_gray3[]         = "#96b5b4";
 static const char col_gray4[]         = "#d7d7d7";
 static const char col_cyan[]          = "#924441"; /* border color focused windows and tags */
-static const char col_green[]		  = "#1aff1a";
+static const char col_green[]		  		= "#1aff1a";
+static const char col_light_blue[]		= "#1a8cff";
 
 static const char *colors[][3]      = {
 	/*               fg         bg         border   */
