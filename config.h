@@ -26,7 +26,7 @@ static const char col_cyan[] =
     "#924441"; /* border color focused windows and tags */
 static const char col_green[] = "#1aff1a";
 static const char col_orange[] = "#df9443";
-static const char col_light_blue[] = "#edd193";
+static const char col_light_blue[] = "#ffffff";
 
 static const char *colors[][3] = {
     /*               fg         bg         border   */
@@ -51,7 +51,8 @@ static const Rule rules[] = {
     /* class      instance    title       tags mask     isfloating   monitor */
     {"gimp", NULL, NULL, 0, 1, -1},
     {"firefox", NULL, NULL, 1 << 4, 0, -1},
-    {"Telegram", NULL, NULL, 1 << 7, 0, -1}};
+    {"Telegram", NULL, NULL, 1 << 7, 0, -1},
+    {"discord", NULL, NULL, 1 << 9, 0, 1}};
 
 /* layout(s) */
 static const float mfact = 0.55; /* factor of master area size [0.05..0.95] */
@@ -86,7 +87,7 @@ static char dmenumon[2] =
 static const char *dmenucmd[] = {
     "dmenu_run", "-m",  dmenumon,   "-fn", dmenufont, "-nb", col_gray1, "-nf",
     col_gray3,   "-sb", col_orange, "-sf", col_gray4, NULL};
-static const char *termcmd[] = {"kitty", NULL};
+static const char *termcmd[] = {"kitty", "-e", "tmux"};
 // Volume
 static const char *upvol[] = {"/usr/bin/pamixer", "-i", "5", NULL, NULL};
 static const char *downvol[] = {"/usr/bin/pamixer", "-d", "5", NULL, NULL};
@@ -129,7 +130,8 @@ static Key keys[] = {
 /* click can be ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle,
  * ClkClientWin, or ClkRootWin */
 static Button buttons[] = {
-    /* click                event mask      button          function argument */
+    /* click                event mask      button          function
+       argument */
     {ClkLtSymbol, 0, Button1, setlayout, {0}},
     {ClkLtSymbol, 0, Button3, setlayout, {.v = &layouts[2]}},
     {ClkWinTitle, 0, Button2, zoom, {0}},
