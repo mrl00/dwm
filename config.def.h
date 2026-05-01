@@ -1,7 +1,9 @@
 /* See LICENSE file for copyright and license details. */
+#include <X11/XF86keysym.h>
 
 /* appearance */
 static const unsigned int borderpx = 2; /* border pixel of windows */
+static const unsigned int gappx = 8;    /* gaps between windows */
 static const unsigned int snap = 32;    /* snap pixel */
 static const unsigned int systraypinning =
     0; /* 0: sloppy systray follows selected monitor, >0: pin systray to monitor
@@ -13,27 +15,50 @@ static const int systraypinningfailfirst =
 static const int showsystray = 1; /* 0 means no systray */
 static const int showbar = 1;     /* 0 means no bar */
 static const int topbar = 1;      /* 0 means bottom bar */
-static const char *fonts[] = {"monospace:size=12"};
-static const char dmenufont[] = "monospace:size=12";
+static const char *fonts[] = {"monospace:size=11"};
+static const char dmenufont[] = "JetBrainsMono Nerd Font Mono:size=11";
 
-static const char col_gray1[] = "#282a36";
-static const char col_gray2[] = "#282a36"; /* border color unfocused windows */
-static const char col_gray3[] = "#96b5b4";
-static const char col_gray4[] = "#d7d7d7";
-static const char col_cyan[] =
-    "#924441"; /* border color focused windows and tags */
-static const char col_green[] = "#1aff1a";
-static const char col_light_blue[] = "#c335b8";
+/* --- color palette --- */
+static const char col_1[] = "#282a36"; /* dark background (Dracula) */
+static const char col_2[] = "#96b5b4"; /* muted teal */
+static const char col_3[] = "#d7d7d7"; /* light gray */
+static const char col_4[] = "#924441"; /* muted red */
+static const char col_5[] = "#1aff1a"; /* bright green */
+static const char col_6[] = "#df9443"; /* orange */
+static const char col_7[] = "#ffffff"; /* white */
+
+/* --- semantic color roles --- */
+/* bar */
+#define bar_bg col_1 /* bar background */
+#define bar_fg col_2 /* bar foreground (normal text) */
+/* selected tag / focused element */
+#define sel_bg col_7 /* selected tag background */
+#define sel_fg col_1 /* selected tag foreground */
+/* window borders */
+#define border_normal col_1  /* unfocused window border */
+#define border_focused col_7 /* focused window border */
+/* dmenu */
+#define dmenu_nb col_1 /* dmenu normal background */
+#define dmenu_nf col_2 /* dmenu normal foreground */
+#define dmenu_sb col_6 /* dmenu selected background */
+#define dmenu_sf col_3 /* dmenu selected foreground */
+
+static const char terminal_multiplexer[] = {"tmux"};
 
 static const char *colors[][3] = {
-    /*               fg         bg         border   */
-    [SchemeNorm] = {col_gray3, col_gray1, col_gray2},
-    [SchemeSel] = {col_gray1, col_green, col_green},
+    /*               fg       bg       border         */
+    [SchemeNorm] = {bar_fg, bar_bg, border_normal},
+    [SchemeSel] = {sel_fg, sel_bg, border_focused},
 };
 
 /* tagging */
-static const char *tags[] = {"", "", "", "", "",
-                             "", "", "", ""};
+static const char *tags[] = {"1", "2", "3", "4", "5", "6", "7", "8", "9"};
+// static const char *tags[] = { "ⅼ","Ⅱ","Ⅲ","Ⅳ","Ⅴ","Ⅵ","Ⅶ","Ⅷ","Ⅸ" };
+//  static const char *tags[] = { "♠", "♡", "♢", "♣", "♤", "♥", "♦", "♧", "✦"};
+// static const char *tags[] = { "", "", "", "", "", "",
+// "", "", "" }; static const char *tags[] = {
+// "☽","☾","🌑","🌒","🌓","🌔","🌕","🌖","🌘" }; static const char *tags[] = {
+// "𖤍","𓅂","࿐","ௐ","ஒ","៚","༆","Ӂ","༫" };
 
 static const Rule rules[] = {
     /* xprop(1):
@@ -41,9 +66,10 @@ static const Rule rules[] = {
      *	WM_NAME(STRING) = title
      */
     /* class      instance    title       tags mask     isfloating   monitor */
-    {"Gimp", NULL, NULL, 0, 1, -1},
-    {"Firefox", NULL, NULL, 1 << 8, 0, -1},
-};
+    {"gimp", NULL, NULL, 0, 1, -1},
+    {"firefox", NULL, NULL, 1 << 4, 0, -1},
+    {"Telegram", NULL, NULL, 1 << 7, 0, -1},
+    {"discord", NULL, NULL, 1 << 8, 0, 1}};
 
 /* layout(s) */
 static const float mfact = 0.55; /* factor of master area size [0.05..0.95] */
@@ -53,9 +79,9 @@ static const int resizehints =
 
 static const Layout layouts[] = {
     /* symbol     arrange function */
-    {"[]=", tile}, /* first entry is default */
-    {"><>", NULL}, /* no layout function means floating behavior */
-    {"[M]", monocle},
+    {"[𝕋]", tile}, /* first entry is default */
+    {"[𝔽]", NULL}, /* no layout function means floating behavior */
+    {"[𝕄]", monocle},
 };
 
 /* key definitions */
@@ -67,20 +93,29 @@ static const Layout layouts[] = {
       {MODKEY | ControlMask | ShiftMask, KEY, toggletag, {.ui = 1 << TAG}},
 
 /* helper for spawning shell commands in the pre dwm-5.0 fashion */
+// clang-format off
 #define SHCMD(cmd)                                                             \
   {                                                                            \
     .v = (const char *[]) { "/bin/sh", "-c", cmd, NULL }                       \
   }
+// clang-format on
 
 /* commands */
 static char dmenumon[2] =
     "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = {
-    "dmenu_run", "-m",      dmenumon, "-fn",    dmenufont, "-nb",     col_gray1,
-    "-nf",       col_gray3, "-sb",    col_cyan, "-sf",     col_gray4, NULL};
-static const char *termcmd[] = {"st", NULL};
+    "dmenu_run", "-m",     dmenumon, "-fn",    dmenufont, "-nb",    dmenu_nb,
+    "-nf",       dmenu_nf, "-sb",    dmenu_sb, "-sf",     dmenu_sf, NULL};
+static const char *termcmd[] = {"kitty", "-e", terminal_multiplexer};
+/* volume */
+static const char *upvol[] = {"/usr/bin/pamixer", "-i", "5", NULL, NULL};
+static const char *downvol[] = {"/usr/bin/pamixer", "-d", "5", NULL, NULL};
+static const char *mutevol[] = {"/usr/bin/pamixer", "-t", NULL, NULL, NULL};
 
 static Key keys[] = {
+    {0, XF86XK_AudioLowerVolume, spawn, {.v = downvol}},
+    {0, XF86XK_AudioMute, spawn, {.v = mutevol}},
+    {0, XF86XK_AudioRaiseVolume, spawn, {.v = upvol}},
     /* modifier                     key        function        argument */
     {MODKEY, XK_p, spawn, {.v = dmenucmd}},
     {MODKEY | ShiftMask, XK_Return, spawn, {.v = termcmd}},
